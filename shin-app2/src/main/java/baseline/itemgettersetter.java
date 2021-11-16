@@ -4,7 +4,7 @@ package baseline;
 public class itemgettersetter {
     private String SerialNumber;
     private String Name;
-    private int Value;
+    private Double Value;
 
 
 
@@ -23,14 +23,14 @@ public class itemgettersetter {
     }
 
 
-    public void setValue(int Value){
+    public void setValue(Double Value){
         this.Value=Value;
     }
-    public int getValue(){
+    public Double getValue(){
         return Value;
     }
 
-    public itemgettersetter(String SerialNumber, String Name, int Value){
+    public itemgettersetter(String SerialNumber, String Name, double Value){
         this.setSerialNumber(SerialNumber);
         this.setName(Name);
         this.setValue(Value);

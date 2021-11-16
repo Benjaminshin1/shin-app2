@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
@@ -17,6 +18,8 @@ public class FXMLController implements Initializable {
 
     @FXML
     private MenuItem load_saved;
+    @FXML
+    private Button delete_item_button;
 
     @FXML
     private TextField name_text_field;
@@ -34,7 +37,7 @@ public class FXMLController implements Initializable {
     private TableColumn<itemgettersetter, String> serial_number=new TableColumn<>("SerialNumber");
 
     @FXML
-    private TableColumn<itemgettersetter, Integer> value=new TableColumn<>("Value");
+    private TableColumn<itemgettersetter, Double> value=new TableColumn<>("Value");
 
     @FXML
     private TextField serial_number_text_field;
@@ -50,7 +53,7 @@ public class FXMLController implements Initializable {
         //add to database
 
         if(!serial_number_text_field.getText().isEmpty()||!name_text_field.getText().isEmpty()||!price_text_field.getText().isEmpty()) {
-            list.add(new itemgettersetter(serial_number_text_field.getText(), name_text_field.getText(), Integer.parseInt(price_text_field.getText())));
+            list.add(new itemgettersetter(serial_number_text_field.getText(), name_text_field.getText(), Double.parseDouble(price_text_field.getText())));
         }else {
             //error message if input is empty
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -76,6 +79,11 @@ public class FXMLController implements Initializable {
     @FXML
     void removefromlist(){
         //user can click on an item an it will remove the item from the list
+        delete_item_button.setOnAction(e -> {
+            itemgettersetter selectedItem = table_view.getSelectionModel().getSelectedItem();
+            table_view.getItems().remove(selectedItem);
+        });
+        table_view.refresh();
     }
     @FXML
     void searchitem(){
@@ -88,6 +96,11 @@ public class FXMLController implements Initializable {
     @FXML
     void save(){
         //based on what file type the user chooses this will write to that file and save on local
+    }
+    @FXML
+    void deleteall(){
+        table_view.getItems().clear();
+        list.removeAll();
     }
     @FXML
     void loadsaved(){
@@ -108,10 +121,10 @@ public class FXMLController implements Initializable {
         name.setCellFactory(TextFieldTableCell.forTableColumn());
 
 
-        value.setCellValueFactory(new PropertyValueFactory<itemgettersetter,Integer>("Value"));
-        value.setCellFactory(TextFieldTableCell.<itemgettersetter,Integer>forTableColumn(new IntegerStringConverter(){
+        value.setCellValueFactory(new PropertyValueFactory<itemgettersetter,Double>("Value"));
+        value.setCellFactory(TextFieldTableCell.<itemgettersetter,Double>forTableColumn(new DoubleStringConverter(){
             @Override
-            public Integer fromString(String value){
+            public Double fromString(String value){
                 try{
                     return super.fromString(value);
                 }catch(NumberFormatException e){
@@ -133,6 +146,9 @@ public class FXMLController implements Initializable {
                     ).setSerialNumber(t.getNewValue());
                 }
         );
+
+
+        
         name.setOnEditCommit(
                 (TableColumn.CellEditEvent<itemgettersetter, String> t) -> {
                     if(t.getNewValue().length()<2||t.getNewValue().length()>256){
@@ -151,7 +167,7 @@ public class FXMLController implements Initializable {
                 }
         );
             value.setOnEditCommit(
-                    (TableColumn.CellEditEvent<itemgettersetter, Integer> t) -> {
+                    (TableColumn.CellEditEvent<itemgettersetter, Double> t) -> {
                         if(t.getNewValue()==null){
                             t.getRowValue().setValue(t.getOldValue());
                         }else
