@@ -1,11 +1,13 @@
 package baseline;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -17,9 +19,6 @@ public class FXMLController implements Initializable {
     private MenuItem load_saved;
 
     @FXML
-    private TableColumn<?, ?> name;
-
-    @FXML
     private TextField name_text_field;
 
     @FXML
@@ -29,20 +28,50 @@ public class FXMLController implements Initializable {
     private MenuItem save_as;
 
     @FXML
-    private TableColumn<?, ?> serial_number;
+    private TableColumn<itemgettersetter, String> name=new TableColumn<>("Name");
+
+    @FXML
+    private TableColumn<itemgettersetter, String> serial_number=new TableColumn<>("SerialNumber");
+
+    @FXML
+    private TableColumn<itemgettersetter, Integer> value=new TableColumn<>("Value");
 
     @FXML
     private TextField serial_number_text_field;
 
     @FXML
-    private TableView<?> table_view;
+    private TableView<itemgettersetter> table_view=new TableView<>();
 
-    @FXML
-    private TableColumn<?, ?> value;
+    ObservableList<itemgettersetter> list= FXCollections.observableArrayList();
 
     @FXML
     void addtolist(){
         //get the text from the user input and diplay it on the tableview
+        //add to database
+
+        if(!serial_number_text_field.getText().isEmpty()||!name_text_field.getText().isEmpty()||!price_text_field.getText().isEmpty()) {
+            list.add(new itemgettersetter(serial_number_text_field.getText(), name_text_field.getText(), Integer.parseInt(price_text_field.getText())));
+        }else {
+            //error message if input is empty
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Input fields empty");
+            alert.setContentText("Please fill all input fields");
+
+            alert.showAndWait();
+        }
+
+            //clear the textfields
+            serial_number_text_field.clear();
+            name_text_field.clear();
+            price_text_field.clear();
+
+
+
+            table_view.setEditable(true);
+            table_view.setItems(list);
+
+        //System.out.println(list);
+
     }
     @FXML
     void removefromlist(){
@@ -72,6 +101,68 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        serial_number.setCellValueFactory(new PropertyValueFactory<>("SerialNumber"));
+       serial_number.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        name.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        name.setCellFactory(TextFieldTableCell.forTableColumn());
+
+
+        value.setCellValueFactory(new PropertyValueFactory<itemgettersetter,Integer>("Value"));
+        value.setCellFactory(TextFieldTableCell.<itemgettersetter,Integer>forTableColumn(new IntegerStringConverter(){
+            @Override
+            public Integer fromString(String value){
+                try{
+                    return super.fromString(value);
+                }catch(NumberFormatException e){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("ERROR");
+                    alert.setContentText("Please input a number!");
+
+                    alert.showAndWait();
+                    return null;
+                }
+            }
+        }));
+
+
+        serial_number.setOnEditCommit(
+                (TableColumn.CellEditEvent<itemgettersetter, String> t) -> {
+                    (t.getTableView().getItems().get(
+                            t.getTablePosition().getRow())
+                    ).setSerialNumber(t.getNewValue());
+                }
+        );
+        name.setOnEditCommit(
+                (TableColumn.CellEditEvent<itemgettersetter, String> t) -> {
+                    if(t.getNewValue().length()<2||t.getNewValue().length()>256){
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("ERROR");
+                        alert.setContentText("Please input a valid name!");
+                        alert.showAndWait();
+
+                        t.getOldValue();
+                        table_view.refresh();
+                    }else
+                    (t.getTableView().getItems().get(
+                            t.getTablePosition().getRow())
+                    ).setName(t.getNewValue());
+                }
+        );
+            value.setOnEditCommit(
+                    (TableColumn.CellEditEvent<itemgettersetter, Integer> t) -> {
+                        if(t.getNewValue()==null){
+                            t.getRowValue().setValue(t.getOldValue());
+                        }else
+                        (t.getTableView().getItems().get(
+                                t.getTablePosition().getRow())
+                        ).setValue(t.getNewValue());
+                        table_view.refresh();
+                    }
+            );
+
+
 
     }
 }

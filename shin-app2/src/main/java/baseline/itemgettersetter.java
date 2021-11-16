@@ -37,8 +37,8 @@ public class itemgettersetter {
     }
     @Override
     public String toString(){
-        //returns the input from text box to readable string for date and description
-        return this.getSerialNumber() + " "+ this.getName() ;
+        //returns the input from text box to readable string for serial number and name
+        return this.getSerialNumber()+ "  " + this.getName() + " "+this.getValue();
 
     }
 }
