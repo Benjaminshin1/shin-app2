@@ -8,7 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -87,7 +86,7 @@ public class FXMLController implements Initializable {
             table_view.setEditable(true);
             table_view.setItems(list);
 
-        //System.out.println(list);
+
 
     }
     @FXML
@@ -135,7 +134,7 @@ public class FXMLController implements Initializable {
         name.setCellFactory(TextFieldTableCell.forTableColumn());
 
 
-        value.setCellValueFactory(new PropertyValueFactory<itemgettersetter,Double>("Value"));
+        value.setCellValueFactory(new PropertyValueFactory<>("Value"));
         value.setCellFactory(TextFieldTableCell.<itemgettersetter,Double>forTableColumn(new DoubleStringConverter(){
             @Override
             public Double fromString(String value){
@@ -145,7 +144,6 @@ public class FXMLController implements Initializable {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("ERROR");
                     alert.setContentText("Please input a number!");
-
                     alert.showAndWait();
                     return null;
                 }
@@ -155,9 +153,17 @@ public class FXMLController implements Initializable {
 
         serial_number.setOnEditCommit(
                 (TableColumn.CellEditEvent<itemgettersetter, String> t) -> {
-                    (t.getTableView().getItems().get(
-                            t.getTablePosition().getRow())
-                    ).setSerialNumber(t.getNewValue());
+                    if(t.getNewValue().matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}")) {
+                        (t.getTableView().getItems().get(
+                                t.getTablePosition().getRow())
+                        ).setSerialNumber(t.getNewValue());
+                    }else{
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("ERROR");
+                        alert.setContentText("Please input a valid serial number!");
+                        alert.showAndWait();
+                    }
+                    table_view.refresh();
                 }
         );
 
@@ -174,20 +180,22 @@ public class FXMLController implements Initializable {
 
                         t.getOldValue();
                         table_view.refresh();
-                    }else
-                    (t.getTableView().getItems().get(
-                            t.getTablePosition().getRow())
-                    ).setName(t.getNewValue());
+                    }else {
+                        (t.getTableView().getItems().get(
+                                t.getTablePosition().getRow())
+                        ).setName(t.getNewValue());
+                    }
                 }
         );
             value.setOnEditCommit(
                     (TableColumn.CellEditEvent<itemgettersetter, Double> t) -> {
                         if(t.getNewValue()==null){
                             t.getRowValue().setValue(t.getOldValue());
-                        }else
-                        (t.getTableView().getItems().get(
-                                t.getTablePosition().getRow())
-                        ).setValue(t.getNewValue());
+                        }else {
+                            (t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow())
+                            ).setValue(t.getNewValue());
+                        }
                         table_view.refresh();
                     }
             );
