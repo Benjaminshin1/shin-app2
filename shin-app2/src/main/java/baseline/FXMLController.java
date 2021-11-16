@@ -148,7 +148,7 @@ public class FXMLController implements Initializable {
         );
 
 
-        
+
         name.setOnEditCommit(
                 (TableColumn.CellEditEvent<itemgettersetter, String> t) -> {
                     if(t.getNewValue().length()<2||t.getNewValue().length()>256){
