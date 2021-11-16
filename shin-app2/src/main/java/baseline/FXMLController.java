@@ -40,6 +40,36 @@ public class FXMLController implements Initializable {
     @FXML
     private TableColumn<?, ?> value;
 
+    @FXML
+    void addtolist(){
+        //get the text from the user input and diplay it on the tableview
+    }
+    @FXML
+    void removefromlist(){
+        //user can click on an item an it will remove the item from the list
+    }
+    @FXML
+    void searchitem(){
+        //user can input a string and it will compare and search from the saved array will search for serial number and name
+    }
+    @FXML
+    void savefile(){
+        //will save file of the array list in a TSV/HTML/and JSON
+    }
+    @FXML
+    void save(){
+        //based on what file type the user chooses this will write to that file and save on local
+    }
+    @FXML
+    void loadsaved(){
+        //will load and update the tableview with the loaded list
+    }
+    @FXML
+    void showerrormessage(){
+        //everytime the user inputs a wrong input in the text box an error message will propagate and display a specific error message with what went wrong
+    }
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 

@@ -1,27 +1,39 @@
 @startuml
-'https://plantuml.com/class-diagram
-
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
-
-List <|-- AbstractList
-Collection <|-- AbstractCollection
-
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
+class InventoryManagementApplication{
++start()
++main()
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
+class FXMLController{
+ @FXML
+    -MenuItem load_saved;
+    -TableColumn<?, ?> name;
+    -TextField name_text_field;
+    -TextField price_text_field;
+    -MenuItem save_as;
+    -TableColumn<?, ?> serial_number;
+    -TextField serial_number_text_field;
+    -TableView<?> table_view;
+    -TableColumn<?, ?> value;
+    --
+    void addtolist()
+    void removefromlist()
+
+    void searchitem()
+
+
+    void savefile()
+
+
+    void save()
+
+
+    void loadsaved()
+
+
+    void showerrormessage()
+
 }
+
 
 @enduml

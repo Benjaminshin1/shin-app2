@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class InventoryManagementApplication extends Application {
+
+    //start method
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("InventoryManagement.fxml")));

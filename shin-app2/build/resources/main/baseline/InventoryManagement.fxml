@@ -20,6 +20,7 @@
                       <MenuItem fx:id="load_saved" mnemonicParsing="false" text="load saved" />
                     </items>
                   </MenuButton>
+                  <Button fx:id="delete_item_button" layoutX="176.0" layoutY="121.0" mnemonicParsing="false" text="Delete item" />
                </children>
             </AnchorPane>
          </children></AnchorPane>
