@@ -1,5 +1,5 @@
 # Project exclude paths
-/build/
+*/build/
 /build/classes/java/main/
 /build/classes/java/test/
 .idea
