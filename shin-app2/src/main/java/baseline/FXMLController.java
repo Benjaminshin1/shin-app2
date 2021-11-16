@@ -28,6 +28,18 @@ public class FXMLController implements Initializable {
     private TextField price_text_field;
 
     @FXML
+    private TextField ser;
+
+    @FXML
+    private TextField ser1;
+
+    @FXML
+    private TextField ser2;
+
+    @FXML
+    private TextField ser3;
+
+    @FXML
     private MenuItem save_as;
 
     @FXML
@@ -39,8 +51,6 @@ public class FXMLController implements Initializable {
     @FXML
     private TableColumn<itemgettersetter, Double> value=new TableColumn<>("Value");
 
-    @FXML
-    private TextField serial_number_text_field;
 
     @FXML
     private TableView<itemgettersetter> table_view=new TableView<>();
@@ -51,9 +61,10 @@ public class FXMLController implements Initializable {
     void addtolist(){
         //get the text from the user input and diplay it on the tableview
         //add to database
+        String serialnumber=ser.getText()+"-"+ser1.getText()+"-"+ser2.getText()+"-"+ser3.getText();
 
-        if(!serial_number_text_field.getText().isEmpty()||!name_text_field.getText().isEmpty()||!price_text_field.getText().isEmpty()) {
-            list.add(new itemgettersetter(serial_number_text_field.getText(), name_text_field.getText(), Double.parseDouble(price_text_field.getText())));
+        if(!ser.getText().isEmpty()||!name_text_field.getText().isEmpty()||!price_text_field.getText().isEmpty()||!ser1.getText().isEmpty()||!ser2.getText().isEmpty()||!ser3.getText().isEmpty()) {
+            list.add(new itemgettersetter(serialnumber, name_text_field.getText(), Double.parseDouble(price_text_field.getText())));
         }else {
             //error message if input is empty
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -64,7 +75,10 @@ public class FXMLController implements Initializable {
         }
 
             //clear the textfields
-            serial_number_text_field.clear();
+            ser.clear();
+            ser1.clear();
+            ser2.clear();
+            ser3.clear();
             name_text_field.clear();
             price_text_field.clear();
 

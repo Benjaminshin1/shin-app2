@@ -12,7 +12,6 @@ class FXMLController{
     -TextField price_text_field;
     -MenuItem save_as;
     -TableColumn<?, ?> serial_number;
-    -TextField serial_number_text_field;
     -TableView<?> table_view;
     -TableColumn<?, ?> value;
     --
