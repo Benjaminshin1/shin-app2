@@ -246,7 +246,20 @@ public class FXMLController implements Initializable {
 
         name.setOnEditCommit(
                 (TableColumn.CellEditEvent<itemgettersetter, String> t) -> {
-                    if (t.getNewValue().length() < 2 || t.getNewValue().length() > 256) {
+                    Boolean status=true;
+                    for(itemgettersetter d : list){
+                        if(d.getName() != null && d.getName().matches(t.getNewValue())){
+                            status=false;
+                        }
+                    }
+                    if(!status){
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("ERROR");
+                        alert.setContentText("Name already exists!");
+                        alert.showAndWait();
+                        t.getOldValue();
+                        table_view.refresh();
+                    }else if (t.getNewValue().length() < 2 || t.getNewValue().length() > 256) {
 
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("ERROR");
