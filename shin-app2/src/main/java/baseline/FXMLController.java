@@ -72,9 +72,9 @@ public class FXMLController implements Initializable {
         //add to database
         String serialnumber = ser.getText() + "-" + ser1.getText() + "-" + ser2.getText() + "-" + ser3.getText();
 
-        if (!ser.getText().isEmpty() || !name_text_field.getText().isEmpty() || !price_text_field.getText().isEmpty() || !ser1.getText().isEmpty() || !ser2.getText().isEmpty() || !ser3.getText().isEmpty()) {
+        if (!name_text_field.getText().isEmpty() && !price_text_field.getText().isEmpty() &&serialnumber.matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}") ) {
             list.add(new itemgettersetter(serialnumber, name_text_field.getText(), Double.parseDouble(price_text_field.getText())));
-        } else {
+        } else{
             //error message if input is empty
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Input fields empty");
@@ -187,6 +187,7 @@ public class FXMLController implements Initializable {
         //everytime the user inputs a wrong input in the text box an error message will propagate and display a specific error message with what went wrong
     }
 
+    //search method for filtering items in the array list
     private boolean searchFindsOrder(itemgettersetter order, String searchText){
         return (order.getSerialNumber().toLowerCase().contains(searchText.toLowerCase())) ||
                 (order.getName().toLowerCase().contains(searchText.toLowerCase()));
