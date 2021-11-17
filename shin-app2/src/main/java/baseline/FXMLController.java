@@ -104,6 +104,7 @@ public class FXMLController implements Initializable {
         delete_item_button.setOnAction(e -> {
             itemgettersetter selectedItem = table_view.getSelectionModel().getSelectedItem();
             table_view.getItems().remove(selectedItem);
+            list.remove(selectedItem);
         });
         table_view.refresh();
     }
