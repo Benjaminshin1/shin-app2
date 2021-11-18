@@ -4,6 +4,9 @@
  */
 package baseline;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,9 +27,6 @@ import java.util.ResourceBundle;
 
 
 public class FXMLController implements Initializable {
-
-    @FXML
-    private MenuItem load_saved;
     @FXML
     private Button delete_item_button;
 
@@ -52,9 +52,6 @@ public class FXMLController implements Initializable {
     private TextField ser3;
 
     @FXML
-    private MenuItem save_as;
-
-    @FXML
     private TableColumn<itemgettersetter, String> name = new TableColumn<>("Name");
 
     @FXML
@@ -77,17 +74,32 @@ public class FXMLController implements Initializable {
         String serialnumber = ser.getText() + "-" + ser1.getText() + "-" + ser2.getText() + "-" + ser3.getText();
 
         Boolean serialstatus=true;
+        Boolean namestatus=true;
         for(itemgettersetter d : list){
             if(d.getSerialNumber() != null && d.getSerialNumber().matches(serialnumber)){
                 serialstatus=false;
             }
         }
-        if(!serialstatus){
+        for(itemgettersetter d : list){
+            if(d.getName()!=null&&d.getName().matches(name_text_field.getText())){
+                namestatus=false;
+            }
+        }
+        if(!namestatus){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setContentText("Name already exists!");
+            alert.showAndWait();
+        } else if(!serialstatus){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setContentText("serial number already exists!");
             alert.showAndWait();
-        } else if (!name_text_field.getText().isEmpty() && !price_text_field.getText().isEmpty() &&serialnumber.matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}") ) {
+        } else if (name_text_field.getText().length()>2
+                &&!name_text_field.getText().isEmpty()
+                && !price_text_field.getText().isEmpty()
+                &&serialnumber.matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}")
+                &&Integer.parseInt(price_text_field.getText())>=0) {
             try {
                 list.add(new itemgettersetter(serialnumber, name_text_field.getText(), Double.parseDouble(price_text_field.getText())));
             }catch (NumberFormatException e){
@@ -99,8 +111,8 @@ public class FXMLController implements Initializable {
         } else{
             //error message if input is empty
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Input fields empty");
-            alert.setContentText("Please fill all input fields");
+            alert.setTitle("Input fields empty or invalid");
+            alert.setContentText("Please fill all fields");
 
             alert.showAndWait();
         }
