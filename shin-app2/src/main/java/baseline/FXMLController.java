@@ -11,8 +11,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
 
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +74,7 @@ public class FXMLController implements Initializable {
         //get the text from the user input and diplay it on the tableview
         //add to database
         String serialnumber = ser.getText() + "-" + ser1.getText() + "-" + ser2.getText() + "-" + ser3.getText();
-
+        
         if (!name_text_field.getText().isEmpty() && !price_text_field.getText().isEmpty() &&serialnumber.matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}") ) {
             list.add(new itemgettersetter(serialnumber, name_text_field.getText(), Double.parseDouble(price_text_field.getText())));
         } else{
@@ -107,16 +110,6 @@ public class FXMLController implements Initializable {
             list.remove(selectedItem);
         });
         table_view.refresh();
-    }
-
-    @FXML
-    void loadData() {
-
-    }
-
-    @FXML
-    void savefile() {
-        //will save file of the array list in a TSV/HTML/and JSON
     }
 
     @FXML
@@ -168,8 +161,46 @@ public class FXMLController implements Initializable {
 
     }
     @FXML
-    void save() {
+    void save_file() {
         //based on what file type the user chooses this will write to that file and save on local
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save");
+        //Set extension filter
+        fileChooser.setInitialDirectory(new File("C://"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
+                new FileChooser.ExtensionFilter("TSV", "*.tsv"),
+                new FileChooser.ExtensionFilter("HTML Files", "*.html")
+        );
+
+        File savedFile= fileChooser.showSaveDialog(stage);
+        if (savedFile != null) {
+
+            try {
+                save(savedFile);
+            }
+            catch(IOException e) {
+
+                e.printStackTrace();
+            }
+        }
+    }
+    @FXML
+    //get the file location from filechooser and then create a new txt file with that new location
+    public void save(File fileName) throws IOException {
+        try{
+            // Create file
+            FileWriter fstream = new FileWriter(fileName);
+            BufferedWriter out = new BufferedWriter(fstream);
+            for(int i=0;i<list.size();i++){
+                out.write(list.get(i).getSerialNumber()+","+list.get(i).getName()+","+list.get(i).getValue()+"\n");
+            }
+            //Close the output stream
+            out.close();
+        }catch (Exception e){//Catch exception if any
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -179,9 +210,49 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
-    void loadsaved() {
+    void loadsaved() throws IOException {
         //will load and update the tableview with the loaded list
-    }
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save");
+        //Set extension filter
+        fileChooser.setInitialDirectory(new File("C://"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
+                new FileChooser.ExtensionFilter("TSV", "*.tsv"),
+                new FileChooser.ExtensionFilter("HTML Files", "*.html")
+        );
+        File loadfile= fileChooser.showOpenDialog(stage);
+        if (loadfile != null) {
+
+            load(loadfile);
+        }
+        }
+
+        @FXML
+        void load(File loadfile){
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(new File(loadfile.toString())));
+                String line;
+                String[] array;
+                list.removeAll();
+                table_view.getItems().clear();
+
+                while ((line = br.readLine()) != null){
+                    array = line.split(",");
+                    list.add(new itemgettersetter((array[0]), (array[1]), Double.parseDouble(array[2])));
+                }
+                table_view.setItems(list);
+                table_view.setEditable(true);
+
+                br.close();
+
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+
 
     @FXML
     void showerrormessage() {
