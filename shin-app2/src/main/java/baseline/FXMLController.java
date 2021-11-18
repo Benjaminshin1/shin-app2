@@ -392,7 +392,11 @@ public class FXMLController implements Initializable {
         );
         value.setOnEditCommit(
                 (TableColumn.CellEditEvent<itemgettersetter, Double> t) -> {
-                    if (t.getNewValue() == null) {
+                    if (t.getNewValue() == null||t.getNewValue()<0) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("ERROR");
+                        alert.setContentText("Invalid Value!");
+                        alert.showAndWait();
                         t.getRowValue().setValue(t.getOldValue());
                     } else {
                         (t.getTableView().getItems().get(
