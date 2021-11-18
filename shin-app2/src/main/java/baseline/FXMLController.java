@@ -73,10 +73,29 @@ public class FXMLController implements Initializable {
     void addtolist() {
         //get the text from the user input and diplay it on the tableview
         //add to database
+        //serial number builder
         String serialnumber = ser.getText() + "-" + ser1.getText() + "-" + ser2.getText() + "-" + ser3.getText();
-        
-        if (!name_text_field.getText().isEmpty() && !price_text_field.getText().isEmpty() &&serialnumber.matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}") ) {
-            list.add(new itemgettersetter(serialnumber, name_text_field.getText(), Double.parseDouble(price_text_field.getText())));
+
+        Boolean serialstatus=true;
+        for(itemgettersetter d : list){
+            if(d.getSerialNumber() != null && d.getSerialNumber().matches(serialnumber)){
+                serialstatus=false;
+            }
+        }
+        if(!serialstatus){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setContentText("serial number already exists!");
+            alert.showAndWait();
+        } else if (!name_text_field.getText().isEmpty() && !price_text_field.getText().isEmpty() &&serialnumber.matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}") ) {
+            try {
+                list.add(new itemgettersetter(serialnumber, name_text_field.getText(), Double.parseDouble(price_text_field.getText())));
+            }catch (NumberFormatException e){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("ERROR");
+                alert.setContentText("Please input a number!");
+                alert.showAndWait();
+            }
         } else{
             //error message if input is empty
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -300,11 +319,24 @@ public class FXMLController implements Initializable {
 
         serial_number.setOnEditCommit(
                 (TableColumn.CellEditEvent<itemgettersetter, String> t) -> {
-                    if (t.getNewValue().matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}")) {
+                    Boolean serialstatus=true;
+                    for(itemgettersetter d : list){
+                        if(d.getSerialNumber() != null && d.getSerialNumber().matches(t.getNewValue())){
+                            serialstatus=false;
+                        }
+                    }
+                    if(!serialstatus){
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("ERROR");
+                        alert.setContentText("serial number already exists!");
+                        alert.showAndWait();
+                        t.getOldValue();
+                    }
+                    if (t.getNewValue().matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}")&&serialstatus) {
                         (t.getTableView().getItems().get(
                                 t.getTablePosition().getRow())
                         ).setSerialNumber(t.getNewValue());
-                    } else {
+                    } else if(serialstatus){
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("ERROR");
                         alert.setContentText("Please input a valid serial number!");
