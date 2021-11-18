@@ -67,7 +67,7 @@ public class FXMLController implements Initializable {
     ObservableList<itemgettersetter> list = FXCollections.observableArrayList();
 
     @FXML
-    void addtolist() {
+    public void addtolist() {
         //get the text from the user input and diplay it on the tableview
         //add to database
         //serial number builder
@@ -133,7 +133,7 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
-    void removefromlist() {
+    public void removefromlist() {
         //user can click on an item an it will remove the item from the list
         delete_item_button.setOnAction(e -> {
             itemgettersetter selectedItem = table_view.getSelectionModel().getSelectedItem();
@@ -192,7 +192,7 @@ public class FXMLController implements Initializable {
 
     }
     @FXML
-    void save_file() {
+    public void save_file() {
         //based on what file type the user chooses this will write to that file and save on local
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
@@ -235,13 +235,13 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
-    void deleteall() {
+    public void deleteall() {
         table_view.getItems().clear();
         list.removeAll();
     }
 
     @FXML
-    void loadsaved() throws IOException {
+    public void loadsaved() throws IOException {
         //will load and update the tableview with the loaded list
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
@@ -261,13 +261,14 @@ public class FXMLController implements Initializable {
         }
 
         @FXML
-        void load(File loadfile){
+       public void load(File loadfile){
             try {
                 BufferedReader br = new BufferedReader(new FileReader(new File(loadfile.toString())));
                 String line;
                 String[] array;
                 list.removeAll();
                 table_view.getItems().clear();
+                table_view.refresh();
 
                 while ((line = br.readLine()) != null){
                     array = line.split(",");
@@ -282,13 +283,6 @@ public class FXMLController implements Initializable {
                 ex.printStackTrace();
             }
         }
-
-
-
-    @FXML
-    void showerrormessage() {
-        //everytime the user inputs a wrong input in the text box an error message will propagate and display a specific error message with what went wrong
-    }
 
     //search method for filtering items in the array list
     private boolean searchFindsOrder(itemgettersetter order, String searchText){

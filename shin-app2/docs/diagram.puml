@@ -1,38 +1,53 @@
 @startuml
+class itemgettersetter{
+-String name
+-String serial_number
+-Double Value
+--
++getSerialnumber()
++getName()
++getValue()
++setSerialnumber(String serialnumber)
++setName(String Name)
++setValue(Double Value)
++itemgettersetter(String serialnumber,String Name,Double Value)
+
+}
+
 class InventoryManagementApplication{
 +start()
 +main()
 }
 
 class FXMLController{
- @FXML
-    -MenuItem load_saved;
-    -TableColumn<?, ?> name;
-    -TextField name_text_field;
-    -TextField price_text_field;
-    -MenuItem save_as;
-    -TableColumn<?, ?> serial_number;
-    -TableView<?> table_view;
-    -TableColumn<?, ?> value;
+     -Button delete_item_button;
+     -TextField name_text_field;
+     -TextField price_text_field;
+     -TextField search_bar_text_field;
+     -TextField ser;
+     -TextField ser1;
+     -TextField ser2;
+     -TextField ser3;
+     -TableColumn<itemgettersetter, String> name = new TableColumn<>("Name");
+     -TableColumn<itemgettersetter, String> serial_number = new TableColumn<>("SerialNumber");
+     -TableColumn<itemgettersetter, Double> value = new TableColumn<>("Value");
+     -TableView<itemgettersetter> table_view = new TableView<>();
+     ObservableList<itemgettersetter> list = FXCollections.observableArrayList();
     --
-    void addtolist()
-    void removefromlist()
-
-    void searchitem()
-
-
-    void savefile()
-
-
-    void save()
-
-
-    void loadsaved()
-
-
-    void showerrormessage()
+    +void addtolist()
+    +void removefromlist()
+    +void randomcharacter()
+    +void savefile()
+    +void deleteall()
+    +void save()
+    +void loadsaved()
+    +void load()
+    -boolean searchFindsOrder(itemgettersetter order, String searchText)
+    -ObservableList<itemgettersetter> filterList(List<itemgettersetter> list, String searchText)
+    +void initialize()
 
 }
-
+InventoryManagementApplication<-FXMLController
+FXMLController<-itemgettersetter
 
 @enduml
