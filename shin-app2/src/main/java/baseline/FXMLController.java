@@ -5,6 +5,7 @@
 package baseline;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.collections.FXCollections;
@@ -20,10 +21,7 @@ import javafx.util.converter.DoubleStringConverter;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class FXMLController implements Initializable {
@@ -192,7 +190,7 @@ public class FXMLController implements Initializable {
 
     }
     @FXML
-    public void save_file() {
+    public void save_file() throws IOException {
         //based on what file type the user chooses this will write to that file and save on local
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
@@ -206,10 +204,13 @@ public class FXMLController implements Initializable {
         );
 
         File savedFile= fileChooser.showSaveDialog(stage);
-        if (savedFile != null) {
+        if(savedFile.toString().contains(".json")){
+            Jsonsave(savedFile);
+        } else if (savedFile != null) {
 
             try {
                 save(savedFile);
+
             }
             catch(IOException e) {
 
@@ -234,6 +235,56 @@ public class FXMLController implements Initializable {
         }
     }
 
+    public void Jsonsave(File filesave) throws IOException {
+        JsonArray employeeObject = new JsonArray();
+        JsonObject employeeList = new JsonObject();
+
+        FileWriter fstream = new FileWriter(filesave);
+        BufferedWriter out = new BufferedWriter(fstream);
+
+         for(int i=0;i<list.size();i++) {
+             JsonObject employeeDetails = new JsonObject();
+             employeeDetails.addProperty("serial_number", list.get(i).getSerialNumber());
+             employeeDetails.addProperty("Name", list.get(i).getName());
+             employeeDetails.addProperty("Value", list.get(i).getValue());
+             //Put the above JSON Object in another JSON object.
+             employeeObject.add(employeeDetails);
+         }
+        employeeList.add("items",employeeObject);
+        out.write(employeeList.toString());
+         out.close();
+        //Write above object to JSONArray
+        System.out.println(employeeList);
+    }
+    public void jsonload(File fileload){
+
+        //JSON parser object to parse read file
+        JsonParser jsonParser = new JsonParser();
+
+        try (FileReader reader = new FileReader(fileload))
+        {
+            list.removeAll();
+            table_view.getItems().clear();
+            Object obj = JsonParser.parseReader(new FileReader(fileload));
+            JsonObject jsonObject = (JsonObject)obj;
+            //Reading products array from  the file
+            JsonArray totalproducts = (JsonArray)jsonObject.get("items");
+
+            Iterator<JsonElement> iterator = totalproducts.iterator();
+            //Loop through
+            while (iterator.hasNext()) {
+                JsonObject json = (JsonObject) iterator.next();
+                list.add(new itemgettersetter(json.get("serial_number").toString().replaceAll("\"",""),json.get("Name").toString().replaceAll("\"",""),json.get("Value").getAsDouble()));
+            }
+            table_view.setItems(list);
+            table_view.setEditable(true);
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @FXML
     public void deleteall() {
         table_view.getItems().clear();
@@ -254,8 +305,10 @@ public class FXMLController implements Initializable {
                 new FileChooser.ExtensionFilter("HTML Files", "*.html")
         );
         File loadfile= fileChooser.showOpenDialog(stage);
-        if (loadfile != null) {
-
+        if(loadfile.toString().contains(".json")){
+            jsonload(loadfile);
+        }
+        else if (loadfile != null) {
             load(loadfile);
         }
         }
