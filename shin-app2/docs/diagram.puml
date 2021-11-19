@@ -39,9 +39,16 @@ class FXMLController{
     +void randomcharacter()
     +void savefile()
     +void deleteall()
-    +void save()
     +void loadsaved()
-    +void load()
+
+    +void savehtml()
+    +void tsvsave()
+    +void jsonsave()
+
+    +void loadhtml()
+    +void loadtsv()
+    +void jsonload()
+
     -boolean searchFindsOrder(itemgettersetter order, String searchText)
     -ObservableList<itemgettersetter> filterList(List<itemgettersetter> list, String searchText)
     +void initialize()

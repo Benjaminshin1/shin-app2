@@ -18,6 +18,10 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.URL;
@@ -97,7 +101,7 @@ public class FXMLController implements Initializable {
                 &&!name_text_field.getText().isEmpty()
                 && !price_text_field.getText().isEmpty()
                 &&serialnumber.matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}")
-                &&Integer.parseInt(price_text_field.getText())>=0) {
+                &&Double.parseDouble(price_text_field.getText())>=0) {
             try {
                 list.add(new itemgettersetter(serialnumber, name_text_field.getText(), Double.parseDouble(price_text_field.getText())));
             }catch (NumberFormatException e){
@@ -205,11 +209,17 @@ public class FXMLController implements Initializable {
 
         File savedFile= fileChooser.showSaveDialog(stage);
         if(savedFile.toString().contains(".json")){
+            //json format save
             Jsonsave(savedFile);
-        } else if (savedFile != null) {
+        }else if(savedFile.toString().contains(".tsv")){
+            //save to tsv format
+            tsvsave(savedFile);
+        }
+        else if (savedFile != null) {
 
             try {
-                save(savedFile);
+                //regular format for now
+                savehtml(savedFile);
 
             }
             catch(IOException e) {
@@ -220,14 +230,23 @@ public class FXMLController implements Initializable {
     }
     @FXML
     //get the file location from filechooser and then create a new txt file with that new location
-    public void save(File fileName) throws IOException {
+    public void savehtml(File fileName) throws IOException {
         try{
             // Create file
             FileWriter fstream = new FileWriter(fileName);
             BufferedWriter out = new BufferedWriter(fstream);
+            out.write(new StringBuilder().append("<html>\n").append("<style>\n").append("table, th, td {\n").append("  border:1px solid black;\n").append("}\n").append("</style>\n").append("<body>\n").append("<table style=\"width:100%\">").toString());
+            out.write(new StringBuilder().append("<tr>\n").append("    <th>Serial Number</th>\n").append("    <th>Name</th>\n").append("    <th>Value</th>\n").append("  </tr>\n").toString());
             for(int i=0;i<list.size();i++){
-                out.write(list.get(i).getSerialNumber()+","+list.get(i).getName()+","+list.get(i).getValue()+"\n");
+                out.write("<tr>\n");
+                out.write("<td>"+list.get(i).getSerialNumber()+"</td>\n");
+                out.write("<td>"+list.get(i).getName()+"</td>\n");
+                out.write("<td>"+list.get(i).getValue()+"</td>\n");
+                //out.write(list.get(i).getSerialNumber()+","+list.get(i).getName()+","+list.get(i).getValue()+"\n");
+                out.write("</tr>\n");
             }
+            out.write(new StringBuilder().append("</table>\n").append("\n").append("</body>\n").append("</html>").toString());
+
             //Close the output stream
             out.close();
         }catch (Exception e){//Catch exception if any
@@ -235,26 +254,37 @@ public class FXMLController implements Initializable {
         }
     }
 
+    public void tsvsave(File filesave) throws IOException {
+        //tab separated values
+        FileWriter fstream = new FileWriter(filesave);
+        BufferedWriter out = new BufferedWriter(fstream);
+        for(int i=0;i<list.size();i++){
+            out.write(list.get(i).getSerialNumber()+"\t"+list.get(i).getName()+"\t"+list.get(i).getValue()+"\n");
+        }
+        //Close the output stream
+        out.close();
+    }
+
     public void Jsonsave(File filesave) throws IOException {
-        JsonArray employeeObject = new JsonArray();
-        JsonObject employeeList = new JsonObject();
+        JsonArray itemObject = new JsonArray();
+        JsonObject itemlist = new JsonObject();
 
         FileWriter fstream = new FileWriter(filesave);
         BufferedWriter out = new BufferedWriter(fstream);
-
+        //creating valid json format
          for(int i=0;i<list.size();i++) {
-             JsonObject employeeDetails = new JsonObject();
-             employeeDetails.addProperty("serial_number", list.get(i).getSerialNumber());
-             employeeDetails.addProperty("Name", list.get(i).getName());
-             employeeDetails.addProperty("Value", list.get(i).getValue());
+             JsonObject itemdetails = new JsonObject();
+             itemdetails.addProperty("serial_number", list.get(i).getSerialNumber());
+             itemdetails.addProperty("Name", list.get(i).getName());
+             itemdetails.addProperty("Value", list.get(i).getValue());
              //Put the above JSON Object in another JSON object.
-             employeeObject.add(employeeDetails);
+             itemObject.add(itemdetails);
          }
-        employeeList.add("items",employeeObject);
-        out.write(employeeList.toString());
+        itemlist.add("items",itemObject);
+        out.write(itemlist.toString());
          out.close();
         //Write above object to JSONArray
-        System.out.println(employeeList);
+        System.out.println(itemlist);
     }
     public void jsonload(File fileload){
 
@@ -278,8 +308,6 @@ public class FXMLController implements Initializable {
             }
             table_view.setItems(list);
             table_view.setEditable(true);
-
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -307,34 +335,58 @@ public class FXMLController implements Initializable {
         File loadfile= fileChooser.showOpenDialog(stage);
         if(loadfile.toString().contains(".json")){
             jsonload(loadfile);
-        }
-        else if (loadfile != null) {
-            load(loadfile);
+
+        } else if(loadfile.toString().contains(".tsv")){
+            loadtsv(loadfile);
+
+        } else if (loadfile != null) {
+            loadhtml(loadfile);
         }
         }
 
         @FXML
-       public void load(File loadfile){
+       public void loadhtml(File loadfile){
+        //loading a html file
             try {
-                BufferedReader br = new BufferedReader(new FileReader(new File(loadfile.toString())));
-                String line;
-                String[] array;
                 list.removeAll();
                 table_view.getItems().clear();
                 table_view.refresh();
 
-                while ((line = br.readLine()) != null){
-                    array = line.split(",");
-                    list.add(new itemgettersetter((array[0]), (array[1]), Double.parseDouble(array[2])));
+                ArrayList<String> downServers = new ArrayList<>();
+                File input = new File(loadfile.toString());
+                Document doc = Jsoup.parse(input, null);
+                Elements rows = doc.getElementsByTag("tr");
+
+                for(Element row : rows) {
+                    String Test = row.getElementsByTag("td").text();
+                    String[] Data=Test.split("\\s+");
+                    if(Data.length>1){
+                        //some reason the first iteration is length of 1 probably due to it parsing blank data
+                        list.add(new itemgettersetter(Data[0],Data[1],Double.parseDouble(Data[2])));
+                    }
                 }
                 table_view.setItems(list);
                 table_view.setEditable(true);
 
-                br.close();
-
             }catch (Exception ex){
                 ex.printStackTrace();
             }
+        }
+        public void loadtsv(File loadfile) throws IOException {
+            //loading a tsv file
+            BufferedReader br = new BufferedReader(new FileReader(new File(loadfile.toString())));
+            String line;
+            String[] array;
+            list.removeAll();
+            table_view.getItems().clear();
+            table_view.refresh();
+
+            while ((line = br.readLine()) != null){
+            array = line.split("\t");
+            list.add(new itemgettersetter((array[0]), (array[1]), Double.parseDouble(array[2])));
+             }
+            table_view.setItems(list);
+            table_view.setEditable(true);
         }
 
     //search method for filtering items in the array list
