@@ -266,7 +266,7 @@ public class FXMLController implements Initializable {
             for(int i=0;i<list.size();i++){
                 out.write("<tr>\n");
                 out.write("<td>"+list.get(i).getSerialNumber()+"</td>\n");
-                out.write("<td>"+list.get(i).getName()+"</td>\n");
+                out.write("<td>"+list.get(i).getName().replaceAll(" ","-")+"</td>\n");
                 out.write("<td>"+list.get(i).getValue()+"</td>\n");
                 //out.write(list.get(i).getSerialNumber()+","+list.get(i).getName()+","+list.get(i).getValue()+"\n");
                 out.write("</tr>\n");
@@ -388,7 +388,7 @@ public class FXMLController implements Initializable {
                     String[] Data=Test.split("\\s+");
                     if(Data.length>1){
                         //some reason the first iteration is length of 1 probably due to it parsing blank data
-                        list.add(new itemgettersetter(Data[0],Data[1],Double.parseDouble(Data[2])));
+                        list.add(new itemgettersetter(Data[0],Data[1].replaceAll("-"," "),Double.parseDouble(Data[2])));
                     }
                 }
                 table_view.setItems(list);
