@@ -1,6 +1,8 @@
+/*
+ *  UCF COP3330 Fall 2021 Application Assignment 2 Solution
+ *  Copyright 2021 Benjamin Shin
+ */
 package baseline;
-
-
 public class itemgettersetter {
     private String SerialNumber;
     private String Name;
