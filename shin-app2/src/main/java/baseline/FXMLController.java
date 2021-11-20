@@ -124,6 +124,7 @@ public class FXMLController implements Initializable {
             alert.setContentText("serial number already exists!");
             alert.showAndWait();
         } else if (name_text_field.getText().length()>2
+                &&name_text_field.getText().length()<256
                 &&!name_text_field.getText().isEmpty()
                 && !price_text_field.getText().isEmpty()
                 &&serialnumber.matches("[A-Z]-[0-9a-z]{3}-[0-9a-z]{3}-[0-9a-z]{3}")
