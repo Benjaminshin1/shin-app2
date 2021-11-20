@@ -177,7 +177,7 @@ public class FXMLController implements Initializable {
         //string of all characters
         //added random serial number generator
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String alphanumeric="123456789abcdefghijklmnopqrstuvwxyz";
+        String alphanumeric="1234567890abcdefghijklmnopqrstuvwxyz";
 
         StringBuilder Alpha = new StringBuilder();
         StringBuilder sb = new StringBuilder();
