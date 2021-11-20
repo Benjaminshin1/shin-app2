@@ -15,6 +15,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
@@ -29,6 +31,30 @@ import java.util.*;
 
 
 public class FXMLController implements Initializable {
+    @FXML
+    private AnchorPane Anchor_pane;
+
+    @FXML
+    private Button add_item_button;
+
+    @FXML
+    private Button delete_all_button;
+
+    @FXML
+    private MenuButton drop_down_save_load;
+
+    @FXML
+    private MenuItem load_saved;
+
+    @FXML
+    private MenuItem save_as;
+
+    @FXML
+    private Text search_text_text;
+
+    @FXML
+    private SplitPane split_pane;
+
     @FXML
     private Button delete_item_button;
 
