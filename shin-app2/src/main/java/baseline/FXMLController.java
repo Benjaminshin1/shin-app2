@@ -324,7 +324,7 @@ public class FXMLController implements Initializable {
         //will load and update the tableview with the loaded list
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save");
+        fileChooser.setTitle("Load");
         //Set extension filter
         fileChooser.setInitialDirectory(new File("C://"));
         fileChooser.getExtensionFilters().addAll(
