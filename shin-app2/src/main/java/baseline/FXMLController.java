@@ -230,7 +230,7 @@ public class FXMLController implements Initializable {
         fileChooser.setInitialDirectory(new File("C://"));
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
-                new FileChooser.ExtensionFilter("TSV", "*.tsv"),
+                new FileChooser.ExtensionFilter("TSV", "*.txt"),
                 new FileChooser.ExtensionFilter("HTML Files", "*.html")
         );
 
@@ -238,7 +238,7 @@ public class FXMLController implements Initializable {
         if(savedFile.toString().contains(".json")){
             //json format save
             Jsonsave(savedFile);
-        }else if(savedFile.toString().contains(".tsv")){
+        }else if(savedFile.toString().contains(".txt")){
             //save to tsv format
             tsvsave(savedFile);
         }
@@ -356,14 +356,14 @@ public class FXMLController implements Initializable {
         fileChooser.setInitialDirectory(new File("C://"));
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"),
-                new FileChooser.ExtensionFilter("TSV", "*.tsv"),
+                new FileChooser.ExtensionFilter("TSV", "*.txt"),
                 new FileChooser.ExtensionFilter("HTML Files", "*.html")
         );
         File loadfile= fileChooser.showOpenDialog(stage);
         if(loadfile.toString().contains(".json")){
             jsonload(loadfile);
 
-        } else if(loadfile.toString().contains(".tsv")){
+        } else if(loadfile.toString().contains(".txt")){
             loadtsv(loadfile);
 
         } else if (loadfile != null) {
